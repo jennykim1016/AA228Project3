@@ -67,7 +67,7 @@ alpha = 1.0
 price = hyper_param.get_price_history()
 num_iter = 1000
 gamma = 0.9
-"""
+
 # dummy slope interval, 0 coin
 s = (0, 0)
 for trial in range(10000):
@@ -100,8 +100,7 @@ for trial in range(10000):
         else:
             Q[s] = {action: (cur_Q + alpha * (r + gamma * new_Q - cur_Q))}
         s = sp
-print(Q)    
-"""
+print(Q)
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
