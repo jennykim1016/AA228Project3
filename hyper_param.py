@@ -2,6 +2,7 @@
 Defines the global hyper parameter for the package
 """
 import numpy as np
+import bisect
 
 def get_policy_length():
     return 100
@@ -26,3 +27,10 @@ def get_interval_min_slope():
 
 def get_interval_num():
     return 20
+
+def get_interval_enum(slope):
+    dist = get_interval_distance()
+    minimum = get_interval_min_slope()
+    num_interval = get_interval_num()
+    intervals = [minimum + dist*i for i in range(num_interval)]
+    return bisect.bisect_right(intervals, slope)
