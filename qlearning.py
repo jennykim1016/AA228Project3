@@ -52,6 +52,8 @@ def generate_Q_learning_policy(Q, t, price):
                 action = random.choice([-1, 0, 1])
         else:
             action = random.choice([-1, 0, 1])
+        if prob <= 0.8:
+            action = random.choice([-1, 0, 1])
         if action == -1:
             cur_num_coins += 1
         elif action == 1:
@@ -70,7 +72,7 @@ gamma = 0.9
 
 # dummy slope interval, 0 coin
 s = (0, 0)
-for trial in range(10000):
+for trial in range(100):
     t = 1000 # backfilled so not reliable
     for i in range(num_iter):
         cur_Q = 0
@@ -100,7 +102,7 @@ for trial in range(10000):
         else:
             Q[s] = {action: (cur_Q + alpha * (r + gamma * new_Q - cur_Q))}
         s = sp
-print(Q)
+#print(Q)
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
