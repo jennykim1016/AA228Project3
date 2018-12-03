@@ -4,6 +4,9 @@ Defines the global hyper parameter for the package
 import numpy as np
 import bisect
 
+def get_30_t_for_eval():
+    return [1777, 1669, 1099, 1352, 1467, 1534, 1978, 1130, 1671, 1364, 1488, 1203, 1666, 1227, 1458, 1040, 1974, 1487, 1461, 1714, 1415, 1888, 1023, 1833, 1468, 1811, 1945, 1983, 1176, 1698]
+
 def get_policy_length():
     return 100
 
