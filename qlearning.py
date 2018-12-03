@@ -24,8 +24,11 @@ def generate_simulation(t, a, s, price):
         return ((-price[t]*s[1])[0], (get_interval_enum(slope[0]), 0))
     else:
         if a == -1: # buy
-            reward = 0-price[t][0]
-            num_coin += 1
+            if random.random() < 0.9:
+                reward = 0-price[t][0]
+                num_coin += 1
+            else:
+                reward = 0
         elif a == 1: # sell
             reward = price[t][0]
             num_coin -= 1
