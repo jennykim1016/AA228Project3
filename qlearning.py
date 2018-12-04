@@ -37,7 +37,8 @@ def generate_simulation(t, a, s, price):
     interval_group = get_interval_enum(slope[0])
     return (reward, (interval_group, num_coin))
 
-def generate_Q_learning_policy(t, price):
+def generate_Q_learning_policy(t):
+    price = hyper_param.get_price_history()
     with open('Q_qlearning.pkl', 'rb') as f:
         Q = pickle.load(f)
     policy = []
@@ -54,7 +55,7 @@ def generate_Q_learning_policy(t, price):
                 action = random.choice([-1, 0, 1])
         else:
             action = random.choice([-1, 0, 1])
-        if prob <= 0.8:
+        if random.uniform(0, 1) <= 0.8:
             action = random.choice([-1, 0, 1])
         if action == -1:
             cur_num_coins += 1
@@ -129,6 +130,7 @@ for i in range(hyper_param.get_evaluation_step()):
     reward_array.append(reward)
 
 print_statistics_95_confidence(reward_array)
-"""
 
 save_Q()
+"""
+
