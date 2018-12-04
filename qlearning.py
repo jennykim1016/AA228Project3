@@ -19,7 +19,7 @@ def generate_simulation(t, a, s, price):
     reward = 0
     num_coin = s[1]
     if s[1] <= -50 or s[1] >= 50:
-        return ((price[t]*s[1])[0], (get_interval_enum(slope[0]), 0))
+        return ((-price[t]*s[1])[0], (get_interval_enum(slope[0]), 0))
     else:
         if a == -1: # buy
             if random.random() < 0.9:
