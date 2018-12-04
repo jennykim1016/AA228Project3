@@ -107,7 +107,7 @@ def save_Q():
                 Q[s] = {action: (cur_Q + alpha * (r + gamma * new_Q - cur_Q))}
             s = sp
     with open('Q_qlearning.pkl', 'wb') as f:
-        pickle.dump(Q, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(Q, f, 2)
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
@@ -130,7 +130,7 @@ for i in range(hyper_param.get_evaluation_step()):
     reward_array.append(reward)
 
 print_statistics_95_confidence(reward_array)
-
-save_Q()
 """
+save_Q()
 
+generate_Q_learning_policy(1300, 100)
