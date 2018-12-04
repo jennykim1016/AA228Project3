@@ -11,7 +11,7 @@ import numpy as np
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
     reward = np.dot(policy, test_data[random_index:random_index+policy_length])
-    reward -= (sum(policy)*test_data[random_index+policy_length-1])
+    reward += (sum(policy)*test_data[random_index+policy_length-1])
     return reward
 
 def print_statistics_95_confidence(reward_array):
