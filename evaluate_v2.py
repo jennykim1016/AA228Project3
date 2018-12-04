@@ -45,6 +45,7 @@ t_array = []
 upper_bound_array = []
 reward_array = []
 random_number = hp.get_30_t_for_eval()
+print(random_number)
 
 for i in range(hp.get_evaluation_step()):
     random_time = random_number[i]
@@ -64,4 +65,26 @@ plotAll2(t_array, upper_bound_array, reward_array, method='baseline', title="bas
 diff_lowerbound = -(np.array(reward_array) - np.array(upper_bound_array))
 range_ = 2*np.array(upper_bound_array)
 percent_gain = diff_lowerbound / range_
-print("percentage gain:", np.mean(percent_gain))
+print("percentage gain:", np.mean(percent_gain)-0.5, "std: ",np.std(percent_gain))
+print("average reward", np.mean(reward_array))
+
+for i in range(hp.get_evaluation_step()):
+    random_time = random_number[i]
+    policy_length = hp.get_policy_length()
+    #policy = generate_NN_1_step_policy(random_time, prices, policy_length)                                                                                           
+    qlearning_policy = qlearning.generate_Q_learning_policy(random_time, policy_length)                                                                              
+    policy = uniform_baseline.return_random_policy()
+    t_array.append(random_time)
+    upper_bound_array.append(upper_bound_of_maximum_gain(random_time, prices, hp.get_policy_length()))
+    #reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
+    reward_array.append(evaluate.evaluate_reward(qlearning_policy, prices, random_time))                                                                             
+
+plotAll2(t_array, upper_bound_array, reward_array, method='baseline', title="baseline")
+
+## we calculate the percentage gain                                                                                                                                   
+## change everything to the upper bound                                                                                                                               
+diff_lowerbound = -(np.array(reward_array) - np.array(upper_bound_array))
+range_ = 2*np.array(upper_bound_array)
+percent_gain = diff_lowerbound / range_
+print("percentage gain:", np.mean(percent_gain)-0.5, "std of percent gain:", np.std(percent_gain))
+print("average reward", np.mean(reward_array))
