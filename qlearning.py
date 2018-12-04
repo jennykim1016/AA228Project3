@@ -37,13 +37,13 @@ def generate_simulation(t, a, s, price):
     interval_group = get_interval_enum(slope[0])
     return (reward, (interval_group, num_coin))
 
-def generate_Q_learning_policy(t):
+def generate_Q_learning_policy(t, policy_length):
     price = hyper_param.get_price_history()
     with open('Q_qlearning.pkl', 'rb') as f:
         Q = pickle.load(f)
     policy = []
     cur_num_coins = 0
-    for time in range(t, t+hyper_param.get_policy_length()):
+    for time in range(t, t+policy_length):
         x = [t+i for i in range(10)]
         y = price[t-10:t]
         slope, intercept = np.polyfit(x, y, 1)
