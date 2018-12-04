@@ -2,10 +2,9 @@ from __future__ import print_function
 import numpy as np
 import random
 import hyper_param as hp
-import qlearning
 import pickle
 import evaluate
-import uniform_baseline
+import neuralNet
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
@@ -27,26 +26,15 @@ def plotAll(t_array, upper_bound_array, reward_array):
     plt.plot(t_array, reward_array, 'go')
     plt.show()
     
-def plotAll2(t_array, upper_bound_array, reward_array, method, title):
+def plotAll2(t_array, upper_bound_array, reward_array, title):
     import pylab
     pylab.plot(t_array, upper_bound_array, 'b^', label='upper bound of utility')
     pylab.plot(t_array, reward_array, 'r^', label='utility of our policy')
     pylab.plot(t_array, -np.array(upper_bound_array), 'g^', label='lower bound of utility')
-    pylab.legend(loc='upper right')
+    pylab.legend(loc='upper left')
     pylab.xlabel('t')
     pylab.ylabel('Utility')
-    pylab.title(method)
     pylab.savefig(title)
-
-def print_statistics(upper_bound_array, reward_array):
-    ## we calculate the percentage gain                                                                                                                                   
-    ## change everything to the upper bound                                                                                                                               
-    diff_lowerbound = -(np.array(reward_array) - np.array(upper_bound_array))
-    range_ = 2*np.array(upper_bound_array)
-    percent_gain = diff_lowerbound / range_
-    print("percentage gain:", np.mean(percent_gain)-0.5, "std of percent gain:", np.std(percent_gain))
-    print("average reward", np.mean(reward_array))   
-
 
 print("here")
     
@@ -55,46 +43,33 @@ t_array = []
 upper_bound_array = []
 reward_array = []
 random_number = hp.get_30_t_for_eval()
-print(random_number)
 
 for i in range(hp.get_evaluation_step()):
     random_time = random_number[i]
     policy_length = hp.get_policy_length()
     #policy = generate_NN_1_step_policy(random_time, prices, policy_length)
-    #qlearning_policy = qlearning.generate_Q_learning_policy(random_time, policy_length)
-    policy = uniform_baseline.return_random_policy()
+    policy = neuralNet.generate_NN_1_step_policy_ideal(random_time, prices, policy_length)
+    print ("Policy")
+    print (policy)
     t_array.append(random_time)
     upper_bound_array.append(upper_bound_of_maximum_gain(random_time, prices, hp.get_policy_length()))
+    #reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
     reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
-    #reward_array.append(evaluate.evaluate_reward(qlearning_policy, prices, random_time))
     
-plotAll2(t_array, upper_bound_array, reward_array, method='baseline', title="baseline")
+plotAll2(t_array, upper_bound_array, reward_array, title="neural network")
 
 ## we calculate the percentage gain
 ## change everything to the upper bound
 diff_lowerbound = -(np.array(reward_array) - np.array(upper_bound_array))
 range_ = 2*np.array(upper_bound_array)
 percent_gain = diff_lowerbound / range_
-print("percentage gain:", np.mean(percent_gain)-0.5, "std: ",np.std(percent_gain))
-print("average reward", np.mean(reward_array))
+print("percentage gain:", np.mean(percent_gain))
 
-for i in range(hp.get_evaluation_step()):
-    random_time = random_number[i]
-    policy_length = hp.get_policy_length()
-    #policy = generate_NN_1_step_policy(random_time, prices, policy_length)                                                                                           
-    qlearning_policy = qlearning.generate_Q_learning_policy(random_time, policy_length)                                                                              
-    policy = uniform_baseline.return_random_policy()
-    t_array.append(random_time)
-    upper_bound_array.append(upper_bound_of_maximum_gain(random_time, prices, hp.get_policy_length()))
-    #reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
-    reward_array.append(evaluate.evaluate_reward(qlearning_policy, prices, random_time))                                                                             
-
-plotAll2(t_array, upper_bound_array, reward_array, method='baseline', title="baseline")
-
+print ('New analysis:')
 ## we calculate the percentage gain                                                                                                                                   
 ## change everything to the upper bound                                                                                                                               
 diff_lowerbound = -(np.array(reward_array) - np.array(upper_bound_array))
 range_ = 2*np.array(upper_bound_array)
-percent_gain = 1.0 - diff_lowerbound / range_
+percent_gain = diff_lowerbound / range_
 print("percentage gain:", np.mean(percent_gain)-0.5, "std of percent gain:", np.std(percent_gain))
 print("average reward", np.mean(reward_array))
