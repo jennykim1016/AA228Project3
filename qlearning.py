@@ -19,7 +19,7 @@ def generate_simulation(t, a, s, price):
     reward = 0
     num_coin = s[1]
     if s[1] <= -50 or s[1] >= 50:
-        return ((price[t]*s[1])[0], (get_interval_enum(slope[0]), 0))
+        return ((-price[t]*s[1])[0], (get_interval_enum(slope[0]), 0))
     else:
         if a == -1: # buy
             if random.random() < 0.9:
@@ -37,13 +37,13 @@ def generate_simulation(t, a, s, price):
     interval_group = get_interval_enum(slope[0])
     return (reward, (interval_group, num_coin))
 
-def generate_Q_learning_policy(t):
+def generate_Q_learning_policy(t, policy_length):
     price = hyper_param.get_price_history()
     with open('Q_qlearning.pkl', 'rb') as f:
         Q = pickle.load(f)
     policy = []
     cur_num_coins = 0
-    for time in range(t, t+hyper_param.get_policy_length()):
+    for time in range(t, t+policy_length):
         x = [t+i for i in range(10)]
         y = price[t-10:t]
         slope, intercept = np.polyfit(x, y, 1)
@@ -107,7 +107,7 @@ def save_Q():
                 Q[s] = {action: (cur_Q + alpha * (r + gamma * new_Q - cur_Q))}
             s = sp
     with open('Q_qlearning.pkl', 'wb') as f:
-        pickle.dump(Q, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(Q, f, 2)
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
@@ -130,7 +130,7 @@ for i in range(hyper_param.get_evaluation_step()):
     reward_array.append(reward)
 
 print_statistics_95_confidence(reward_array)
-
-save_Q()
 """
+save_Q()
 
+generate_Q_learning_policy(1300, 100)
