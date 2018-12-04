@@ -5,6 +5,7 @@ import hyper_param as hp
 import qlearning
 import pickle
 import evaluate
+import uniform_baseline
 
 def evaluate_reward(policy, test_data, random_index):
     policy_length = len(policy)
@@ -26,14 +27,15 @@ def plotAll(t_array, upper_bound_array, reward_array):
     plt.plot(t_array, reward_array, 'go')
     plt.show()
     
-def plotAll2(t_array, upper_bound_array, reward_array, title):
+def plotAll2(t_array, upper_bound_array, reward_array, method, title):
     import pylab
     pylab.plot(t_array, upper_bound_array, 'b^', label='upper bound of utility')
     pylab.plot(t_array, reward_array, 'r^', label='utility of our policy')
     pylab.plot(t_array, -np.array(upper_bound_array), 'g^', label='lower bound of utility')
-    pylab.legend(loc='upper left')
+    pylab.legend(loc='upper right')
     pylab.xlabel('t')
     pylab.ylabel('Utility')
+    pylab.title(method)
     pylab.savefig(title)
 
 print("here")
@@ -48,14 +50,14 @@ for i in range(hp.get_evaluation_step()):
     random_time = random_number[i]
     policy_length = hp.get_policy_length()
     #policy = generate_NN_1_step_policy(random_time, prices, policy_length)
-    qlearning_policy = qlearning.generate_Q_learning_policy(random_time, policy_length)
-    
+    #qlearning_policy = qlearning.generate_Q_learning_policy(random_time, policy_length)
+    policy = uniform_baseline.return_random_policy()
     t_array.append(random_time)
     upper_bound_array.append(upper_bound_of_maximum_gain(random_time, prices, hp.get_policy_length()))
-    #reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
-    reward_array.append(evaluate.evaluate_reward(qlearning_policy, prices, random_time))
+    reward_array.append(evaluate.evaluate_reward(policy, prices, random_time))
+    #reward_array.append(evaluate.evaluate_reward(qlearning_policy, prices, random_time))
     
-plotAll2(t_array, upper_bound_array, reward_array, title="qlearning")
+plotAll2(t_array, upper_bound_array, reward_array, method='baseline', title="baseline")
 
 ## we calculate the percentage gain
 ## change everything to the upper bound
